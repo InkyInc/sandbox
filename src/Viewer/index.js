@@ -20,6 +20,7 @@ var runAnim = null;
 var sprintAnim = null;
 var jumpAnim = null;
 
+
 //variables
 var animationBlend = 0.005;
 var mouseSensitivity = 0.005;
@@ -38,6 +39,9 @@ var jumped = false;
 var mouseX = 0, mouseY = 0;
 var mouseMin = -35, mouseMax = 45;
 
+// instances of box
+
+var instanceBox = 1000;
 
 
 
@@ -617,7 +621,7 @@ export default class Viewer extends Component {
 
             box.alwaysSelectAsActiveMesh = true;
 
-            let instanceCount = 1000;
+            let instanceCount = instanceBox;
 
             box.registerInstancedBuffer("color", 4);
             box.instancedBuffers.color = new BABYLON.Color4(1, 1, 1, Math.random());
