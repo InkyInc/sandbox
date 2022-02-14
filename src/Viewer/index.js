@@ -28,8 +28,8 @@ var walkSpeed = 0.008;
 var runSpeed = 0.05;
 var sprintSpeed = 0.008;
 // var jumpSpeed = 0.0005;
-var jumpHeight = 10;
-var gravity = new BABYLON.Vector3(0, -0.0981, 0);
+var jumpHeight = 8;
+var gravity = new BABYLON.Vector3(0, -0.250, 0);
 
 //in-game changed variables
 var speed = 0;
@@ -76,8 +76,8 @@ export default class Viewer extends Component {
                 enableGroundShadow: true,
                 enableGroundMirror: true,
                 groundMirrorFallOffDistance: 0,
-                groundSize: 100,
-                skyboxSize: 100,
+                groundSize: 500,
+                skyboxSize: 500,
             });
 
             helper.setMainColor(scene.clearColor);
@@ -320,7 +320,7 @@ export default class Viewer extends Component {
                 var currentState = idleAnim;
 
 
-                //move
+                //MOVE
                 if (directionX !== 0 || directionZ !== 0) {
                     if (run !== 1) {
                         currentState = runAnim;
@@ -344,7 +344,7 @@ export default class Viewer extends Component {
                 }
 
 
-                //jump
+                //JUMP
                 if (jump === 1 && jumped === false) {
                     jumped = true;
                 }
@@ -461,7 +461,7 @@ export default class Viewer extends Component {
 
 
 
-            //tools
+            //TOOLS
             function clamp(value, min, max) {
                 return (Math.max(Math.min(value, max), min));
             }
@@ -608,6 +608,42 @@ export default class Viewer extends Component {
                 }
             });
 
+            var box = BABYLON.MeshBuilder.CreateBox("box", { size: 15 }, scene);
+            box.position = new BABYLON.Vector3(8, 1, 18);
+            // box.material = redMat;
+            addToMirror(box);
+            addShadows(box);
+            box.material = new BABYLON.StandardMaterial("lightBox", scene);
+
+            box.alwaysSelectAsActiveMesh = true;
+
+            let instanceCount = 1000;
+
+            box.registerInstancedBuffer("color", 4);
+            box.instancedBuffers.color = new BABYLON.Color4(1, 1, 1, Math.random());
+
+            let baseColors = [];
+            let alphas = [];
+
+            for (var index = 0; index < instanceCount - 1; index++) {
+                let instance = box.createInstance("box" + index);
+                instance.position.x = 250 - Math.random() * 500;
+                instance.position.y = 200 - Math.random() * 200;
+                instance.position.z = 250 - Math.random() * 500;
+                instance.alwaysSelectAsActiveMesh = true;
+
+
+                alphas.push(Math.random());
+                baseColors.push(new BABYLON.Color4(Math.random(), Math.random(), Math.random(), Math.random()));
+                instance.instancedBuffers.color = baseColors[baseColors.length - 1].clone();
+                instance.checkCollisions = true;
+                // instance.setEnabled(false);
+
+                var startPosition = new BABYLON.Vector3(instance.position.x, instance.position.y, instance.position.z);
+                var endPosition = new BABYLON.Vector3(instance.position.x + Math.random(), instance.position.y + Math.random(), instance.position.z + Math.random());
+                BABYLON.Animation.CreateAndStartAnimation("anim", box, "position", 30, 100, startPosition, endPosition, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+            }
 
 
             const sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
@@ -630,3 +666,4 @@ export default class Viewer extends Component {
         );
     }
 }
+
