@@ -51,6 +51,7 @@ export default class Viewer extends Component {
         this.onSceneMount = (e) => {
             const { canvas, scene, engine } = e;
 
+
             // SETUP CAMERA
 
             // FREE CAMERA (NON MESH)
